@@ -1,0 +1,93 @@
+{
+  "name": "remix-vite",
+  "version": "0.1.0",
+  "description": "Static file serving and directory listing",
+  "keywords": [
+    "remix",
+    "remix-vite",
+    "server",
+    "hmr",
+    "vite",
+    "react",
+    "hot",
+    "reload"
+  ],
+  "repository": "sudomf/remix-vite",
+  "license": "MIT",
+  "bin": {
+    "remix-vite": "./remix-vite.js"
+  },
+  "files": [
+    "remix-vite.js"
+  ],
+  "engines": {
+    "node": ">= 14"
+  },
+  "scripts": {
+    "dev": "run-p dev:**",
+    "dev:watch": "node build.js --watch",
+    "dev:serve": "cd example && nodemon ../remix-vite --watch ../remix-vite.js",
+    "start": "node ./build/main.js",
+    "build": "node build.js",
+    "lint:code": "eslint --fix src/**/*.ts",
+    "lint:style": "prettier --write .",
+    "lint": "yarn lint:code && yarn lint:style",
+    "format": "prettier --write .",
+    "prepare": "husky install config/husky && yarn build"
+  },
+  "dependencies": {
+    "@remix-run/dev": "1.7.5",
+    "@remix-run/express": "1.7.5",
+    "@remix-run/server-runtime": "1.7.5",
+    "@vitejs/plugin-react": "2.2.0",
+    "dotenv": "16.0.3",
+    "express": "4.18.2",
+    "jsesc": "3.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "ts-morph": "16.0.0",
+    "vite": "3.2.2",
+    "vite-tsconfig-paths": "3.5.2"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.14",
+    "@types/jsesc": "3.0.1",
+    "@vercel/style-guide": "3.0.0",
+    "esbuild": "0.15.13",
+    "eslint": "8.19.0",
+    "husky": "8.0.1",
+    "lint-staged": "13.0.3",
+    "nodemon": "2.0.20",
+    "npm-run-all": "4.1.5",
+    "prettier": "2.7.1",
+    "tsx": "3.7.1",
+    "typescript": "4.6.4"
+  },
+  "prettier": "@vercel/style-guide/prettier",
+  "eslintConfig": {
+    "extends": [
+      "./node_modules/@vercel/style-guide/eslint/node.js",
+      "./node_modules/@vercel/style-guide/eslint/typescript.js"
+    ],
+    "parserOptions": {
+      "project": "tsconfig.json"
+    },
+    "rules": {
+      "no-await-in-loop": 0,
+      "eslint-comments/disable-enable-pair": 0,
+      "@typescript-eslint/no-non-null-assertion": 0,
+      "@typescript-eslint/no-unsafe-assignment": 0,
+      "@typescript-eslint/no-unsafe-call": 0,
+      "@typescript-eslint/no-unsafe-member-access": 0,
+      "@typescript-eslint/no-misused-promises": 0
+    }
+  },
+  "lint-staged": {
+    "*.{json,css,scss,md,html,yml,yaml}": [
+      "prettier --write"
+    ],
+    ".{js,ts}": [
+      "eslint --fix"
+    ]
+  }
+}
