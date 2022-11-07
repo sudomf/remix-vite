@@ -1,6 +1,6 @@
 {
   "name": "remix-vite",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Static file serving and directory listing",
   "keywords": [
     "remix",
@@ -14,21 +14,27 @@
   ],
   "repository": "sudomf/remix-vite",
   "license": "MIT",
+  "main": "./lib.js",
+  "module": "./lib.esm.js",
+  "types": "./declarations/entries/lib.d.ts",
   "bin": {
-    "remix-vite": "./remix-vite.js"
+    "remix-vite": "./cli.js"
   },
   "files": [
-    "remix-vite.js"
+    "declarations/**/*.d.ts",
+    "cli.js",
+    "lib.js",
+    "lib.esm.js"
   ],
   "engines": {
     "node": ">= 14"
   },
   "scripts": {
     "dev": "run-p dev:**",
-    "dev:watch": "node build.js --watch",
-    "dev:serve": "cd example && nodemon ../remix-vite --watch ../remix-vite.js",
+    "dev:watch": "node tools/build --watch",
+    "dev:serve": "cd example && nodemon ../cli --watch ../cli.js",
     "start": "node ./build/main.js",
-    "build": "node build.js",
+    "build": "node tools/build.js && tsc --emitDeclarationOnly",
     "lint:code": "eslint --fix src/**/*.ts",
     "lint:style": "prettier --write .",
     "lint": "yarn lint:code && yarn lint:style",
@@ -40,17 +46,20 @@
     "@babel/generator": "7.20.2",
     "@babel/parser": "7.20.2",
     "@babel/traverse": "7.20.1",
+    "@babel/types": "7.20.2",
     "@remix-run/dev": "1.7.5",
     "@remix-run/express": "1.7.5",
     "@remix-run/server-runtime": "1.7.5",
     "@vitejs/plugin-react": "2.2.0",
+    "args": "5.0.3",
     "dotenv": "16.0.3",
+    "express": "4.18.2",
     "jsesc": "3.0.2",
     "vite": "3.2.2",
     "vite-tsconfig-paths": "3.5.2"
   },
   "devDependencies": {
-    "@babel/types": "7.20.2",
+    "@types/args": "5.0.0",
     "@types/babel__core": "7.1.19",
     "@types/babel__generator": "7.6.4",
     "@types/babel__traverse": "7.18.2",
@@ -59,7 +68,6 @@
     "@vercel/style-guide": "3.0.0",
     "esbuild": "0.15.13",
     "eslint": "8.19.0",
-    "express": "4.18.2",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
     "nodemon": "2.0.20",
@@ -71,11 +79,6 @@
   },
   "prettier": "@vercel/style-guide/prettier",
   "eslintConfig": {
-    "ignorePatterns": [
-      "node_modules/**",
-      "example/**",
-      "remix-vite.js"
-    ],
     "extends": [
       "./node_modules/@vercel/style-guide/eslint/node.js",
       "./node_modules/@vercel/style-guide/eslint/typescript.js"
