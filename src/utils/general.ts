@@ -32,17 +32,28 @@ export const getAppDirName = (config: RemixConfig) => {
   return path.relative(process.cwd(), config.appDirectory);
 };
 
+export const resolveRelativeRouteFilePath = (
+  route: Route,
+  config: RemixConfig,
+) => {
+  const appDir = getAppDirName(config);
+  const file = route.file;
+  const fullPath = path.resolve(process.cwd(), appDir, file);
+
+  return fullPath;
+};
+
+export const resolveFSPath = (filePath: string) => {
+  return `/@fs${filePath}`;
+};
+
 export const getRoutesByFile = async () => {
   const config = await getRemixConfig();
-  const appDir = getAppDirName(config);
-
-  const resolveRouteFile = (route: Route) =>
-    path.join(process.cwd(), appDir, route.file);
 
   const routesByFile: Map<string, Route> = Object.keys(config.routes).reduce(
     (map, key) => {
       const route = config.routes[key]!;
-      const file = resolveRouteFile(route);
+      const file = resolveRelativeRouteFilePath(route, config);
       map.set(file, route);
       return map;
     },

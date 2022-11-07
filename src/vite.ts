@@ -40,6 +40,9 @@ export const createRemixViteDevServer = async (
   // can take control
   return createServer({
     server: {
+      fs: {
+        strict: false,
+      },
       cors: true,
       ...options?.serverOptions,
       middlewareMode: true,

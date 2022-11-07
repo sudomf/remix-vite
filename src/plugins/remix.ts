@@ -7,6 +7,8 @@ import {
   getRemixConfig,
   getRemixRouteModuleExports,
   getVirtualModuleUrl,
+  resolveFSPath,
+  resolveRelativeRouteFilePath,
 } from '../utils/general';
 import {
   BROWSER_ASSETS_MANIFEST_ID,
@@ -71,7 +73,7 @@ const getServerEntry = (config: RemixConfig) => {
     .map((key, index) => {
       const route = config.routes[key]!;
       return `import * as route${index} from ${JSON.stringify(
-        `./${appDirName}/${route.file}`,
+        resolveFSPath(resolveRelativeRouteFilePath(route, config)),
       )};`;
     })
     .join('\n')}
@@ -114,7 +116,7 @@ const getAssetManifest = async (config: RemixConfig) => {
       path: route.path,
       index: route.index,
       caseSensitive: route.caseSensitive,
-      module: `/${appDirName}/${route.file}`,
+      module: resolveFSPath(resolveRelativeRouteFilePath(route, config)),
       hasAction: sourceExports.includes('action'),
       hasLoader: sourceExports.includes('loader'),
       hasCatchBoundary: sourceExports.includes('CatchBoundary'),

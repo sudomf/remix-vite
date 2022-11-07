@@ -1,43 +1,21 @@
-import path from 'path';
-import { getAppDirName, getRemixConfig } from '../utils/general';
-import type { RemixConfig } from '@remix-run/dev/dist/config';
+import { getRoutesByFile } from '../utils/general';
 import type { Plugin } from 'vite';
 
-type Route = RemixConfig['routes'][string];
-
 export const getInjectPlugin = async (): Promise<Plugin> => {
-  const config = await getRemixConfig();
-  const appDir = getAppDirName(config);
-
-  const resolveRouteFile = (route: Route) =>
-    path.join(process.cwd(), appDir, route.file);
-
-  const routesByFile: Map<string, Route> = Object.keys(config.routes).reduce(
-    (map, key) => {
-      const route = config.routes[key]!;
-      const file = resolveRouteFile(route);
-      map.set(file, route);
-      return map;
-    },
-    new Map<string, Route>(),
-  );
+  const routesByFile = await getRoutesByFile();
 
   return {
     name: 'vite-plugin-remix-inject',
     enforce: 'pre',
 
-    transform(source, id) {
-      let code = source;
-
+    transform(code, id) {
       const route = routesByFile.get(id);
 
-      if (!route) return code;
+      if (!route) return;
 
       if (route.id === 'root') {
-        code = patchRoot(code);
+        return patchRoot(code);
       }
-
-      return code;
     },
   };
 };
