@@ -5,7 +5,6 @@ import { config } from 'dotenv';
 import { createRequestHandler } from '@remix-run/express';
 import args from 'args';
 import { createRemixViteDevServer, getRemixViteBuild } from '../vite';
-import type { RemixViteServerOptions } from '../vite';
 
 config();
 
@@ -13,7 +12,10 @@ args
   .option('host', 'The host on which the app will be running', 'localhost')
   .option('port', 'The port on which the app will be running', 3000);
 
-const flags = args.parse(process.argv) as RemixViteServerOptions;
+const flags = args.parse(process.argv) as {
+  host: string;
+  port: number;
+};
 
 const mode = 'development';
 
@@ -45,8 +47,8 @@ async function createServer() {
     }
   });
 
-  app.listen(flags.port!, flags.host!, () => {
-    console.log(`🖲 remix-vite started at http://${flags.host!}:${flags.port!}`);
+  app.listen(flags.port, flags.host, () => {
+    console.log(`🖲 remix-vite started at http://${flags.host}:${flags.port}`);
   });
 }
 

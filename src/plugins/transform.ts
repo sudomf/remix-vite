@@ -12,9 +12,18 @@ export const getTransformPlugin = async (): Promise<Plugin> => {
     async transform(code, id, options) {
       const route = routesByFile.get(id);
 
-      if (options?.ssr || !route) return code;
+      // If it's SSR code, let's bypass it.
+      if (options?.ssr) return;
+
+      // If it's .server.<ext>, let's bypass it.
+      if (id.includes('.server.')) return 'export default {}';
+
+      if (!route) return;
 
       const theExports = await getRemixRouteModuleExports(route.id);
+
+      // If it's a route with no default component export, let's bypass it.
+      if (!theExports.includes('default')) return;
 
       const frontendExports = theExports.filter(
         (e) => browserSafeRouteExports[e],
