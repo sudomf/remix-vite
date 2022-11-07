@@ -1,3 +1,6 @@
 /node_modules/**
+/declarations
 /example/**
-/remix-vite.js
+/cli.js
+/lib.js
+/lib.esm.js

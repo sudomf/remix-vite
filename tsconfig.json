@@ -5,8 +5,9 @@
     "target": "ES2016",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "noEmit": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationDir": "./declarations"
   },
   "include": ["src/"]
 }

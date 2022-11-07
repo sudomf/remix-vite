@@ -12,4 +12,7 @@ build/
 *.tgz
 *.bak
 *.tmp
-remix-vite.js
+cli.js
+lib.js
+lib.esm.js
+declarations
