@@ -6,6 +6,7 @@ import { getInjectPlugin } from './plugins/inject';
 import { getRemixPlugin } from './plugins/remix';
 import { getTransformPlugin } from './plugins/transform';
 import { SERVER_ENTRY_ID } from './constants';
+import { checkVersion } from './utils/version';
 import type { ViteDevServer, ServerOptions } from 'vite';
 import type { ServerBuild } from '@remix-run/server-runtime';
 
@@ -30,6 +31,7 @@ export const getRemixViteBuild = async (viteDevServer: ViteDevServer) => {
 export const createRemixViteDevServer = async (
   options?: RemixViteServerOptions,
 ) => {
+  await checkVersion();
   const remixInject = getInjectPlugin();
   const remixPlugin = await getRemixPlugin();
   const remixTransformPlugin = await getTransformPlugin();
