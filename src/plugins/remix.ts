@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { readConfig } from '@remix-run/dev/dist/config';
+
 import jsesc from 'jsesc';
-import { getRouteModuleExports } from '@remix-run/dev/dist/compiler/routeExports';
 import {
   createVirtualModule,
   getAppDirName,
+  getRemixConfig,
+  getRemixRouteModuleExports,
   getVirtualModuleUrl,
-} from '../utils';
+} from '../utils/general';
 import {
   BROWSER_ASSETS_MANIFEST_ID,
   SERVER_ASSETS_MANIFEST_ID,
@@ -16,7 +17,7 @@ import type { RemixConfig } from '@remix-run/dev/dist/config';
 import type { Plugin } from 'vite';
 
 export const getRemixPlugin = async (): Promise<Plugin> => {
-  const config = await readConfig();
+  const config = await getRemixConfig();
   const manifest = await getAssetManifest(config);
   const serverEntryJs = getServerEntry(config);
 
@@ -105,7 +106,7 @@ const getAssetManifest = async (config: RemixConfig) => {
 
   for (const entry of Object.entries(config.routes)) {
     const [key, route] = entry;
-    const sourceExports = await getRouteModuleExports(config, route.id);
+    const sourceExports = await getRemixRouteModuleExports(route.id);
 
     routes[key] = {
       id: route.id,
