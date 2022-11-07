@@ -1,86 +1,34 @@
-import path from 'path';
-import { getRouteModuleExports } from '@remix-run/dev/dist/compiler/routeExports';
-import { readConfig } from '@remix-run/dev/dist/config';
-import { Project } from 'ts-morph';
-import { getAppDirName } from '../utils';
-import type { RemixConfig } from '@remix-run/dev/dist/config';
+import { getRemixRouteModuleExports, getRoutesByFile } from '../utils/general';
+import { filterExports } from '../utils/code';
 import type { Plugin } from 'vite';
 
-type Route = RemixConfig['routes'][string];
-
 export const getTransformPlugin = async (): Promise<Plugin> => {
-  const config = await readConfig();
-  const appDir = getAppDirName(config);
-
-  const project = new Project({
-    skipAddingFilesFromTsConfig: true,
-    skipLoadingLibFiles: true,
-    useInMemoryFileSystem: true,
-  });
-
-  const resolveRouteFile = (route: Route) =>
-    path.join(process.cwd(), appDir, route.file);
-
-  const routesByFile: Map<string, Route> = Object.keys(config.routes).reduce(
-    (map, key) => {
-      const route = config.routes[key]!;
-      const file = resolveRouteFile(route);
-      map.set(file, route);
-      return map;
-    },
-    new Map<string, Route>(),
-  );
+  const routesByFile = await getRoutesByFile();
 
   return {
-    name: 'vite-plugin-remix-sanitize',
+    name: 'vite-plugin-remix-transform',
     enforce: 'pre',
 
-    async transform(source, id, options) {
-      let code = source;
-
+    async transform(code, id, options) {
       const route = routesByFile.get(id);
 
-      if (!route) return code;
+      if (options?.ssr || !route) return code;
 
-      if (route.id === 'root') {
-        code = patchRoot(code);
-      }
-
-      if (options?.ssr) {
-        return code;
-      }
-
-      const theExports = await getRouteModuleExports(config, route.id);
-
-      const serverExports = theExports.filter(
-        (e) => !browserSafeRouteExports[e],
-      );
+      const theExports = await getRemixRouteModuleExports(route.id);
 
       const frontendExports = theExports.filter(
-        (name) => !serverExports.includes(name),
+        (e) => browserSafeRouteExports[e],
       );
 
-      if (frontendExports.length > 0) {
-        const sourceFile = project.createSourceFile(id, code, {
-          overwrite: true,
-        });
+      if (!frontendExports.length) return code;
 
-        const exportMap = sourceFile.getExportedDeclarations();
+      const filtered = filterExports(id, code, frontendExports);
+      const result = filtered.code;
 
-        [...exportMap.keys()].forEach((name) => {
-          if (!frontendExports.includes(name)) {
-            exportMap.get(name)?.forEach((declaration) => {
-              declaration.replaceWithText('');
-            });
-          }
-        });
-
-        const sanitizedCode = sourceFile.getFullText();
-
-        return sanitizedCode;
-      }
-
-      return code;
+      return {
+        code: result,
+        map: null,
+      };
     },
   };
 };
@@ -94,24 +42,3 @@ const browserSafeRouteExports: Record<string, boolean> = {
   meta: true,
   unstable_shouldReload: true,
 };
-
-const patchRoot = (code: string) => {
-  return code
-    .replace(/<LiveReload.*?\/>/, '')
-    .replace(/<Scripts.*\/>/, viteScripts);
-};
-
-const viteScripts = `
-<script type="module" src="/@vite/client" />
-<script
-  type="module"
-  dangerouslySetInnerHTML={{
-    __html: \`import RefreshRuntime from '/@react-refresh'
-  RefreshRuntime.injectIntoGlobalHook(window)
-  window.$RefreshReg$ = () => {}
-  window.$RefreshSig$ = () => (type) => type
-  window.__vite_plugin_react_preamble_installed__ = true\`,
-  }}
-/>
-<Scripts />
-`;
