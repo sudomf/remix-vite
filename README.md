@@ -37,7 +37,7 @@ Let's say you have a custom Express server and you want to use it with `remix-vi
 ```js
 const express = require('express');
 const { createRequestHandler } = require('@remix-run/express');
-const { createRemixViteDevServer, getRemixViteBuild } = require('../lib');
+const { createRemixViteDevServer, getRemixViteBuild } = require('remix-vite');
 
 const app = express();
 
