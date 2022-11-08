@@ -1,12 +1,14 @@
 # remix-vite
 
-<div align="center">
-  <a aria-label="Stars" href="https://github.com/sudomf/remix-vite/stargazers">
-    <img src="https://img.shields.io/github/stars/sudomf/remix-vite">
-  </a>
+
+<div>
+  <br />
+  <br />
+  <img width="320" src="https://user-images.githubusercontent.com/2893850/200666584-3c825b6d-a91d-4ade-bb46-6523fc66416e.png" />
+  <br />
+  <br />
 </div>
 
----
 
 `remix-vite` helps you serve [Remix](https://remix.run/) apps locally using [Vite](https://vitejs.dev/).
 
@@ -71,4 +73,8 @@ If you want a feature to be added, or wish to report a bug, please open an issue
 
 Mayke Freitas ([@sudomf](https://twitter.com/maykedev))
 
-[!["Buy Me A Coffee"](./assets/yellow-button.png)](https://www.buymeacoffee.com/mayke)
+<div>
+  <a href="https://www.buymeacoffee.com/mayke" style="display: block; max-width: 320px;">
+    <img width="320" src="./assets/yellow-button.png" />
+  </div>
+</div>
