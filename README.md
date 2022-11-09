@@ -59,6 +59,8 @@ createRemixViteDevServer().then((remixViteDevServer) => {
   });
 
   // Start the server.
+  // If you want to change the host and port just pass --host and --port flag to remix-vite
+  // eg. > remix-vite --port=4000
   app.listen(3000, () => {
     console.log('Listening at http://localhost:3000');
   });
