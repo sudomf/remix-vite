@@ -32,6 +32,7 @@ export const createRemixViteDevServer = async (
   options?: RemixViteServerOptions,
 ) => {
   await checkVersion();
+
   const remixInject = getInjectPlugin();
   const remixPlugin = await getRemixPlugin();
   const remixTransformPlugin = await getTransformPlugin();

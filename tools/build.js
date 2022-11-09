@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const esbuild = require('esbuild');
+const chokidar = require('chokidar');
 const pkg = require('../package.json');
 
 /**
@@ -12,36 +13,40 @@ const options = {
   write: true,
   bundle: true,
   external: Object.keys(pkg.dependencies),
+  watch: false,
 };
 
-const run = async () => {
+const build = async () => {
   await Promise.all([
-    await esbuild.build({
+    esbuild.build({
       ...options,
-      entryPoints: ['src/entries/lib.ts'],
-      outfile: 'lib.js',
+      entryPoints: ['src/entries/lib.ts', 'src/entries/cli.ts'],
+      outdir: './',
+      assetNames: '[name].[ext]',
     }),
-    await esbuild.build({
+    esbuild.build({
       ...options,
       entryPoints: ['src/entries/lib.ts'],
-      outfile: 'lib.esm.js',
+      format: 'esm',
+      outfile: './lib.esm.js',
     }),
   ]);
-
-  await esbuild.build({
-    ...options,
-    entryPoints: ['src/entries/cli.ts'],
-    outfile: 'cli.js',
-    banner: {
-      js: '#!/usr/bin/env node',
-    },
-    watch: process.argv.includes('--watch'),
-  });
 };
 
-run()
+build()
   .then(() => {
-    process.exit(0);
+    if (process.argv.includes('--dev')) {
+      console.log('Watching for changes...');
+
+      const watcher = chokidar.watch('./src/**/*.ts', {
+        persistent: true,
+      });
+
+      watcher.on('change', async () => {
+        console.log('Rebuilding...');
+        await build();
+      });
+    }
   })
   .catch((e) => {
     console.error(e);

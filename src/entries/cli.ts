@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import express from 'express';
