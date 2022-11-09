@@ -65,6 +65,13 @@ createRemixViteDevServer().then((remixViteDevServer) => {
 });
 ```
 
+## Change default host and port
+
+If you want to change the host and port just pass --host and --port flag to remix-vite. Default host is `localhost` and port is `3000`
+
+
+```> remix-vite --port=4000```
+
 ## Issues
 
 If you want a feature to be added, or wish to report a bug, please open an issue [here](https://github.com/sudomf/remix-vite/issues/new).
