@@ -1,15 +1,13 @@
-import { getRoutesByFile } from '../utils/general';
+import { getRouteByFilePath } from '../utils/general';
 import { fixHmrCode } from '../utils/code';
 import type { Plugin } from 'vite';
 
-export const getHmrFixPlugin = async (): Promise<Plugin> => {
-  const routesByFile = await getRoutesByFile();
-
+export const getHmrFixPlugin = (): Plugin => {
   return {
     name: 'remix-plugin-hmr-fix',
     enforce: 'post',
-    transform(code, id) {
-      const route = routesByFile.get(id);
+    async transform(code, id) {
+      const route = await getRouteByFilePath(id);
 
       if (
         route &&

@@ -33,10 +33,10 @@ export const createRemixViteDevServer = async (
 ) => {
   await checkVersion();
 
-  const remixInject = getInjectPlugin();
   const remixPlugin = await getRemixPlugin();
-  const remixTransformPlugin = await getTransformPlugin();
-  const remixHmrFix = await getHmrFixPlugin();
+  const remixInject = getInjectPlugin();
+  const remixTransformPlugin = getTransformPlugin();
+  const remixHmrFix = getHmrFixPlugin();
 
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
