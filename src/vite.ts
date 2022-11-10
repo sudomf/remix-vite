@@ -1,4 +1,4 @@
-import { createServer } from 'vite';
+import { createServer, mergeConfig } from 'vite';
 import vitePluginReact from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { getHmrFixPlugin } from './plugins/hmr-fix';
@@ -7,12 +7,8 @@ import { getRemixPlugin } from './plugins/remix';
 import { getTransformPlugin } from './plugins/transform';
 import { SERVER_ENTRY_ID } from './constants';
 import { checkVersion } from './utils/version';
-import type { ViteDevServer, ServerOptions } from 'vite';
+import type { ViteDevServer, UserConfig } from 'vite';
 import type { ServerBuild } from '@remix-run/server-runtime';
-
-export interface RemixViteServerOptions {
-  serverOptions?: ServerOptions;
-}
 
 /**
  * Get Remix build
@@ -28,9 +24,7 @@ export const getRemixViteBuild = async (viteDevServer: ViteDevServer) => {
 /**
  * Create remix-vite dev server
  */
-export const createRemixViteDevServer = async (
-  options?: RemixViteServerOptions,
-) => {
+export const createRemixViteDevServer = async (config?: UserConfig) => {
   await checkVersion();
 
   const remixPlugin = await getRemixPlugin();
@@ -41,23 +35,27 @@ export const createRemixViteDevServer = async (
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
   // can take control
-  return createServer({
-    server: {
-      fs: {
-        strict: false,
+  return createServer(
+    mergeConfig(
+      {
+        server: {
+          fs: {
+            strict: false,
+          },
+          cors: true,
+          middlewareMode: true,
+        },
+        plugins: [
+          tsconfigPaths(),
+          remixInject,
+          remixPlugin,
+          remixTransformPlugin,
+          vitePluginReact(),
+          remixHmrFix,
+        ],
+        appType: 'custom',
       },
-      cors: true,
-      ...options?.serverOptions,
-      middlewareMode: true,
-    },
-    plugins: [
-      tsconfigPaths(),
-      remixInject,
-      remixPlugin,
-      remixTransformPlugin,
-      vitePluginReact(),
-      remixHmrFix,
-    ],
-    appType: 'custom',
-  });
+      config || {},
+    ),
+  );
 };
