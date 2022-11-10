@@ -3,10 +3,10 @@
 import jsesc from 'jsesc';
 import {
   createVirtualModule,
-  getAppDirName,
   getRemixConfig,
   getRemixRouteModuleExports,
   getVirtualModuleUrl,
+  resolveAppRelativeFilePath,
   resolveFSPath,
   resolveRelativeRouteFilePath,
 } from '../utils/general';
@@ -63,11 +63,9 @@ export const getRemixPlugin = async (): Promise<Plugin> => {
 };
 
 const getServerEntry = (config: RemixConfig) => {
-  const appDirName = getAppDirName(config);
-
   return `
   import * as entryServer from ${JSON.stringify(
-    `./${appDirName}/${config.entryServerFile}`,
+    resolveFSPath(resolveAppRelativeFilePath(config.entryServerFile, config)),
   )};
   ${Object.keys(config.routes)
     .map((key, index) => {
@@ -104,7 +102,6 @@ const getServerEntry = (config: RemixConfig) => {
 
 const getAssetManifest = async (config: RemixConfig) => {
   const routes: Record<string, any> = {};
-  const appDirName = getAppDirName(config);
 
   for (const entry of Object.entries(config.routes)) {
     const [key, route] = entry;
@@ -129,7 +126,9 @@ const getAssetManifest = async (config: RemixConfig) => {
     url: getVirtualModuleUrl(BROWSER_ASSETS_MANIFEST_ID),
     version: Math.random(),
     entry: {
-      module: `/${appDirName}/${config.entryClientFile}`,
+      module: resolveFSPath(
+        resolveAppRelativeFilePath(config.entryClientFile, config),
+      ),
       imports: [],
     },
     routes,

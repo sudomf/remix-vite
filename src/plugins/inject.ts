@@ -1,15 +1,13 @@
-import { getRoutesByFile } from '../utils/general';
+import { getRouteByFilePath } from '../utils/general';
 import type { Plugin } from 'vite';
 
-export const getInjectPlugin = async (): Promise<Plugin> => {
-  const routesByFile = await getRoutesByFile();
-
+export const getInjectPlugin = (): Plugin => {
   return {
     name: 'vite-plugin-remix-inject',
     enforce: 'pre',
 
-    transform(code, id) {
-      const route = routesByFile.get(id);
+    async transform(code, id) {
+      const route = await getRouteByFilePath(id);
 
       if (!route) return;
 

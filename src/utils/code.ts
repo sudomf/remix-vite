@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { parse } from '@babel/parser';
 import generate from '@babel/generator';
 import traverse from '@babel/traverse';
@@ -7,7 +6,7 @@ import type { NodePath } from '@babel/traverse';
 import type { types as BabelTypes } from '@babel/core';
 
 export const filterExports = (
-  id: string,
+  _id: string,
   source: string,
   exports: string[],
 ) => {

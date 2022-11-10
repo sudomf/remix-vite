@@ -1,5 +1,6 @@
 import path from 'path';
 import { readConfig } from '@remix-run/dev/dist/config';
+import { normalizePath as viteNormalizePath } from 'vite';
 import { getRouteModuleExports } from '@remix-run/dev/dist/compiler/routeExports';
 import type { RemixConfig } from '@remix-run/dev/dist/config';
 
@@ -17,6 +18,10 @@ export const getRemixRouteModuleExports = async (routeId: string) => {
 
 export const getVirtualModuleUrl = (id: string) => `/@id/__x00__virtual:${id}`;
 
+export const normalizePath = (p: string) => {
+  return viteNormalizePath(toUnixPath(p));
+};
+
 export const createVirtualModule = (name: string, code: string) => {
   const virtualModuleId = `virtual:${name}`;
   const resolvedVirtualModuleId = `\0${virtualModuleId}`;
@@ -32,19 +37,31 @@ export const getAppDirName = (config: RemixConfig) => {
   return path.relative(process.cwd(), config.appDirectory);
 };
 
+export const resolveAppRelativeFilePath = (
+  file: string,
+  config: RemixConfig,
+) => {
+  const appDir = getAppDirName(config);
+  return path.resolve(process.cwd(), appDir, file);
+};
+
 export const resolveRelativeRouteFilePath = (
   route: Route,
   config: RemixConfig,
 ) => {
-  const appDir = getAppDirName(config);
   const file = route.file;
-  const fullPath = path.resolve(process.cwd(), appDir, file);
+  const fullPath = resolveAppRelativeFilePath(file, config);
 
-  return fullPath;
+  return normalizePath(fullPath);
 };
 
 export const resolveFSPath = (filePath: string) => {
-  return `/@fs${filePath}`;
+  return `/@fs${normalizePath(filePath)}`;
+};
+
+export const getRouteByFilePath = async (filePath: string) => {
+  const routesByFile = await getRoutesByFile();
+  return routesByFile.get(normalizePath(filePath));
 };
 
 export const getRoutesByFile = async () => {
@@ -62,3 +79,7 @@ export const getRoutesByFile = async () => {
 
   return routesByFile;
 };
+
+const toUnixPath = (p: string) =>
+  // eslint-disable-next-line prefer-named-capture-group
+  p.replace(/[\\/]+/g, '/').replace(/^([a-zA-Z]+:|\.\/)/, '');

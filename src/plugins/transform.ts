@@ -1,22 +1,23 @@
-import { getRemixRouteModuleExports, getRoutesByFile } from '../utils/general';
+import {
+  getRemixRouteModuleExports,
+  getRouteByFilePath,
+} from '../utils/general';
 import { filterExports } from '../utils/code';
 import type { Plugin } from 'vite';
 
-export const getTransformPlugin = async (): Promise<Plugin> => {
-  const routesByFile = await getRoutesByFile();
-
+export const getTransformPlugin = (): Plugin => {
   return {
     name: 'vite-plugin-remix-transform',
     enforce: 'pre',
 
     async transform(code, id, options) {
-      const route = routesByFile.get(id);
-
       // If it's SSR code, let's bypass it.
       if (options?.ssr) return;
 
       // If it's .server.<ext>, let's bypass it.
       if (id.includes('.server.')) return 'export default {}';
+
+      const route = await getRouteByFilePath(id);
 
       if (!route) return;
 

@@ -1,6 +1,6 @@
 node_modules/**
 declarations/**
-example/**
+examples/**
 cli.js
 lib.js
 lib.esm.js
