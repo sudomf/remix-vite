@@ -32,8 +32,7 @@
   "scripts": {
     "dev": "run-p dev:**",
     "dev:watch": "node tools/build --dev",
-    "dev:serve": "cd example && nodemon ../cli --host 0.0.0.0 --watch ../cli.js",
-    "dev:css": "cd example && yarn dev:css",
+    "dev:serve": "cd examples/simple && nodemon ../../cli --host 0.0.0.0 --watch ../../cli.js",
     "start": "node ./build/main.js",
     "build": "node tools/build.js && tsc --emitDeclarationOnly",
     "lint:code": "eslint --fix src/**/*.ts",
