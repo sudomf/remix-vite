@@ -6,6 +6,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Cache
+        id: node-modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Node
@@ -13,6 +22,7 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
+
       - name: Install dependencies and build 🔧
         run: yarn && yarn build
       - name: Publish package on NPM 📦
