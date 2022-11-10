@@ -1,6 +1,6 @@
 {
   "name": "remix-vite",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Static file serving and directory listing",
   "keywords": [
     "remix",
@@ -16,7 +16,7 @@
   "license": "MIT",
   "main": "./lib.js",
   "module": "./lib.esm.js",
-  "types": "./declarations/entries/lib.d.ts",
+  "types": "./declarations/src/entries/lib.d.ts",
   "bin": {
     "remix-vite": "./cli.js"
   },
