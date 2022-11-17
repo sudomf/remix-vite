@@ -5,6 +5,8 @@ import {
 import { filterExports } from '../utils/code';
 import type { Plugin } from 'vite';
 
+const BACKEND_ONLY_EXPORTS = ['loader', 'action'];
+
 export const getTransformPlugin = (): Plugin => {
   return {
     name: 'vite-plugin-remix-transform',
@@ -27,7 +29,7 @@ export const getTransformPlugin = (): Plugin => {
       if (!theExports.includes('default')) return;
 
       const frontendExports = theExports.filter(
-        (e) => browserSafeRouteExports[e],
+        (e) => !BACKEND_ONLY_EXPORTS.includes(e),
       );
 
       if (!frontendExports.length) return code;
@@ -41,14 +43,4 @@ export const getTransformPlugin = (): Plugin => {
       };
     },
   };
-};
-
-const browserSafeRouteExports: Record<string, boolean> = {
-  CatchBoundary: true,
-  ErrorBoundary: true,
-  default: true,
-  handle: true,
-  links: true,
-  meta: true,
-  unstable_shouldReload: true,
 };
