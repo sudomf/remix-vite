@@ -54,7 +54,7 @@ export const createRemixViteDevServer = async (config?: UserConfig) => {
           remixHmrFix,
         ],
         appType: 'custom',
-      },
+      } as UserConfig,
       config || {},
     ),
   );

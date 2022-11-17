@@ -12,6 +12,14 @@ export const getTransformPlugin = (): Plugin => {
     name: 'vite-plugin-remix-transform',
     enforce: 'pre',
 
+    // Skip process CSS as Remix doesn't pre-process CSS.
+    async resolveId(id) {
+      if (id.endsWith('.css') && !id.includes('?')) {
+        const target = await this.resolve(`${id}?url`);
+        return target;
+      }
+    },
+
     async transform(code, id, options) {
       // If it's SSR code, let's bypass it.
       if (options?.ssr) return;
