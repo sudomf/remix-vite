@@ -14,11 +14,9 @@ import type { ServerBuild } from '@remix-run/server-runtime';
  * Get Remix build
  */
 export const getRemixViteBuild = async (viteDevServer: ViteDevServer) => {
-  const build = (await viteDevServer.ssrLoadModule(
-    `virtual:${SERVER_ENTRY_ID}`,
-  )) as ServerBuild;
+  const build = await viteDevServer.ssrLoadModule(`virtual:${SERVER_ENTRY_ID}`);
 
-  return build;
+  return build as ServerBuild;
 };
 
 /**

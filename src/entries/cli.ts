@@ -33,6 +33,8 @@ async function createServer() {
 
   app.all('*', async (req, res, next) => {
     try {
+      purgeRequireCache();
+
       const build = await getRemixViteBuild(viteDevServer);
       const handler = createRequestHandler({
         build,
@@ -57,3 +59,11 @@ createServer().catch((e) => {
   console.error(e);
   process.exit(1);
 });
+
+function purgeRequireCache() {
+  // purge require cache on requests for "server side HMR" this won't let
+  // you have in-memory objects between requests in development.
+  for (const key in require.cache) {
+    delete require.cache[key];
+  }
+}

@@ -57,6 +57,7 @@ function removeExports(
   const declaration = path.get('declaration') as NodePath<
     BabelTypes.FunctionDeclaration | BabelTypes.VariableDeclaration
   >;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!declaration.node) {
     return;
   }
