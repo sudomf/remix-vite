@@ -1,6 +1,6 @@
 const express = require('express');
 const { createRequestHandler } = require('@remix-run/express');
-const { createRemixViteDevServer, getRemixViteBuild } = require('../lib');
+const { createRemixViteDevServer, getRemixViteBuild } = require('../../lib');
 
 const app = express();
 

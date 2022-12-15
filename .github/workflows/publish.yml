@@ -25,6 +25,7 @@ jobs:
 
       - name: Install dependencies and build 🔧
         run: yarn && yarn build
+
       - name: Publish package on NPM 📦
         run: npm publish
         env:

@@ -36,6 +36,7 @@ async function createServer() {
       purgeRequireCache();
 
       const build = await getRemixViteBuild(viteDevServer);
+
       const handler = createRequestHandler({
         build,
         mode,

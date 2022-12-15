@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import jsesc from 'jsesc';
@@ -81,6 +82,11 @@ const getServerEntry = (config: RemixConfig) => {
     export const assetsBuildDirectory = ${JSON.stringify(
       config.relativeAssetsBuildDirectory,
     )};
+    ${
+      config.future
+        ? `export const future = ${JSON.stringify(config.future)}`
+        : ''
+    };
     export const publicPath = ${JSON.stringify(config.publicPath)};
     export const entry = { module: entryServer };
     export const routes = {
